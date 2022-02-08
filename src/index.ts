@@ -63,8 +63,17 @@ const markovOpts: MarkovConstructorOptions = {
 
 const markovGenerateOptions: MarkovGenerateOptions<MarkovDataCustom> = {
   filter: (result): boolean => {
+
+    //QQ Check similar reference
+    let check_refs = true;
+    result.refs.forEach(async (ref) => 
+    {
+      if(ref.string.includes(result.string))
+        check_refs = false;
+    });
+
     return (
-      result.score >= config.minScore && !result.refs.some((ref) => ref.string === result.string)
+      result.score >= config.minScore && !result.refs.some((ref) => ref.string === result.string) && check_refs
     );
   },
   maxTries: config.maxTries,
