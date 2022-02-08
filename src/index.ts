@@ -38,6 +38,9 @@ interface SelectMenuChannel {
   name?: string;
 }
 
+const RANDOM_MESSAGE_CHANCE = 0.02;
+const MESSAGE_LIMIT = 10000;
+
 const INVALID_PERMISSIONS_MESSAGE = 'You do not have the permissions for this action.';
 const INVALID_GUILD_MESSAGE = 'This action must be performed within a server.';
 
@@ -386,6 +389,10 @@ async function saveGuildMessageHistory(
       messagesCount += humanAuthoredMessages.length;
       const lastMessage = channelBatchMessages.last();
 
+      //QQ Message Limit
+      if(messagesCount > MESSAGE_LIMIT)
+        keepGoing = false;
+
       // Update tracking metrics
       if (!lastMessage?.id || channelBatchMessages.size < PAGE_SIZE) {
         keepGoing = false;
@@ -707,7 +714,7 @@ client.on('messageCreate', async (message) => {
         let RandomChance = Math.random();
         L.debug('Random Chance Try');
         L.debug(RandomChance.toString());
-        if (RandomChance <= 0.02) 
+        if (RandomChance <= RANDOM_MESSAGE_CHANCE) 
         {
           L.debug('Random Chance Pass');
           const generatedResponse = await generateResponse(message);
