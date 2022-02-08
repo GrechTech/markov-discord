@@ -63,8 +63,21 @@ const markovOpts: MarkovConstructorOptions = {
 
 const markovGenerateOptions: MarkovGenerateOptions<MarkovDataCustom> = {
   filter: (result): boolean => {
+
+    //QQ Check similar reference
+    let check_refs = true;
+    result.refs.forEach(async (ref) => 
+    {
+      L.trace('Checking refs')
+      if(ref.string.includes(result.string))
+      {
+        check_refs = false;
+        L.debug('Reference contains response')
+      }
+    });
+
     return (
-      result.score >= config.minScore && !result.refs.some((ref) => ref.string === result.string)
+      result.score >= config.minScore && !result.refs.some((ref) => ref.string === result.string) && check_refs
     );
   },
   maxTries: config.maxTries,
@@ -411,7 +424,8 @@ async function saveGuildMessageHistory(
       if (firstMessageDate && oldestMessageDate) {
         const channelAge = firstMessageDate - channelCreateDate;
         const lastMessageAge = firstMessageDate - oldestMessageDate;
-        const pctComplete = lastMessageAge / channelAge;
+        //const pctComplete = lastMessageAge / channelAge;
+        const pctComplete = messagesCount / MESSAGE_LIMIT; //Set percentage based on limit
         currentChannelPercent.value = `${(pctComplete * 100).toFixed(2)}%`;
         channelEta.report(pctComplete);
         const estimateSeconds = channelEta.estimate();
