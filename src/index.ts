@@ -631,7 +631,7 @@ function gamecubeMessage(): Discord.MessageOptions
   const avatarURL = client.user.avatarURL() || undefined;
   const gamecubeNameScore = gamecube_score_list[gamecube_index];
   const embed = new Discord.MessageEmbed()
-    .addField(`${gamecubeName}`, `Score: ${gamecubeNameScore}`);
+    .addField(`${gamecubeName}`, `Rating: ${gamecubeNameScore}`);
   return { embeds: [embed] };
 }
 
