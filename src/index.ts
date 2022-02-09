@@ -424,8 +424,7 @@ async function saveGuildMessageHistory(
       if (firstMessageDate && oldestMessageDate) {
         const channelAge = firstMessageDate - channelCreateDate;
         const lastMessageAge = firstMessageDate - oldestMessageDate;
-        //const pctComplete = lastMessageAge / channelAge;
-        const pctComplete = messagesCount / MESSAGE_LIMIT; //Set percentage based on limit
+        const pctComplete = lastMessageAge / channelAge;
         currentChannelPercent.value = `${(pctComplete * 100).toFixed(2)}%`;
         channelEta.report(pctComplete);
         const estimateSeconds = channelEta.estimate();
