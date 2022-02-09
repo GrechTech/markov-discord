@@ -735,6 +735,7 @@ client.on('messageCreate', async (message) => {
           L.debug('Random Chance Try');
           L.debug(CountSinceOutput.toString());
           L.debug(RandomChance.toString());
+          L.debug(((CountSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE).toString() );
           if (RandomChance < ((CountSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE )) 
           {
             L.debug('Random Chance Pass');
