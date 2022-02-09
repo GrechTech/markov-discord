@@ -68,12 +68,8 @@ const markovGenerateOptions: MarkovGenerateOptions<MarkovDataCustom> = {
     let check_refs = true;
     result.refs.forEach(async (ref) => 
     {
-      L.trace('Checking refs')
       if(ref.string.includes(result.string))
-      {
         check_refs = false;
-        L.debug('Reference contains response')
-      }
     });
 
     return (
