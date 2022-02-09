@@ -2,6 +2,8 @@
 
 A Markov chain bot using markov-strings.
 
+QQ Version contains an auto post mechanism, a limit on the number of messages it will use to train, and a system to retry generation if a proposed generated message is a duplicate of one of the reference inputs
+
 ## Usage
 
 1. Configure what channels you want the bot to listen/learn from:
