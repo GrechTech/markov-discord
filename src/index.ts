@@ -38,6 +38,8 @@ interface SelectMenuChannel {
   name?: string;
 }
 
+var CountSinceOutput = 0;
+const RANDOM_MESSAGE_TARGET = 50;
 const RANDOM_MESSAGE_CHANCE = 0.01;
 const MESSAGE_LIMIT = 10000;
 
@@ -68,8 +70,12 @@ const markovGenerateOptions: MarkovGenerateOptions<MarkovDataCustom> = {
     let check_refs = true;
     result.refs.forEach(async (ref) => 
     {
+      L.trace('Checking refs')
       if(ref.string.includes(result.string))
+      {
         check_refs = false;
+        L.debug('Reference contains response')
+      }
     });
 
     return (
@@ -420,8 +426,7 @@ async function saveGuildMessageHistory(
       if (firstMessageDate && oldestMessageDate) {
         const channelAge = firstMessageDate - channelCreateDate;
         const lastMessageAge = firstMessageDate - oldestMessageDate;
-        //const pctComplete = lastMessageAge / channelAge;
-        const pctComplete = messagesCount / MESSAGE_LIMIT; //Set percentage based on limit
+        const pctComplete = lastMessageAge / channelAge;
         currentChannelPercent.value = `${(pctComplete * 100).toFixed(2)}%`;
         channelEta.report(pctComplete);
         const estimateSeconds = channelEta.estimate();
@@ -490,6 +495,9 @@ async function generateResponse(
     const response = await markov.generate<MarkovDataCustom>(markovGenerateOptions);
     L.info({ string: response.string }, 'Generated response text');
     L.debug({ response }, 'Generated response object');
+    
+    CountSinceOutput = 0; //QQ Reset post counter
+    
     const messageOpts: Discord.MessageOptions = {
       tts,
       allowedMentions: { repliedUser: false, parse: [] },
@@ -724,12 +732,16 @@ client.on('messageCreate', async (message) => {
         let RandomChance = Math.random();
         L.debug('Random Chance Try');
         L.debug(RandomChance.toString());
-        if (RandomChance <= RANDOM_MESSAGE_CHANCE) 
+        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)))
         {
-          L.debug('Random Chance Pass');
-          const generatedResponse = await generateResponse(message);
-          await handleResponseMessage(generatedResponse, message);
+          if (RandomChance < ((CountSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE )) 
+          {
+            L.debug('Random Chance Pass');
+            const generatedResponse = await generateResponse(message);
+            await handleResponseMessage(generatedResponse, message);
+          }
         }
+        CountSinceOutput++;
       }
     }
   }
