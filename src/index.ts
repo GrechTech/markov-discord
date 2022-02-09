@@ -38,6 +38,8 @@ interface SelectMenuChannel {
   name?: string;
 }
 
+var CountSinceOutput = 0;
+const RANDOM_MESSAGE_TARGET = 50;
 const RANDOM_MESSAGE_CHANCE = 0.01;
 const MESSAGE_LIMIT = 10000;
 
@@ -493,6 +495,9 @@ async function generateResponse(
     const response = await markov.generate<MarkovDataCustom>(markovGenerateOptions);
     L.info({ string: response.string }, 'Generated response text');
     L.debug({ response }, 'Generated response object');
+    
+    CountSinceOutput = 0; //QQ Reset post counter
+    
     const messageOpts: Discord.MessageOptions = {
       tts,
       allowedMentions: { repliedUser: false, parse: [] },
@@ -727,12 +732,16 @@ client.on('messageCreate', async (message) => {
         let RandomChance = Math.random();
         L.debug('Random Chance Try');
         L.debug(RandomChance.toString());
-        if (RandomChance <= RANDOM_MESSAGE_CHANCE) 
+        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)))
         {
-          L.debug('Random Chance Pass');
-          const generatedResponse = await generateResponse(message);
-          await handleResponseMessage(generatedResponse, message);
+          if (RandomChance < ((CountSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE )) 
+          {
+            L.debug('Random Chance Pass');
+            const generatedResponse = await generateResponse(message);
+            await handleResponseMessage(generatedResponse, message);
+          }
         }
+        CountSinceOutput++;
       }
     }
   }
