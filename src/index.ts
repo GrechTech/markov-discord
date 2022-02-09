@@ -497,7 +497,7 @@ async function generateResponse(
     L.debug({ response }, 'Generated response object');
     
     CountSinceOutput = 0; //QQ Reset post counter
-    
+
     const messageOpts: Discord.MessageOptions = {
       tts,
       allowedMentions: { repliedUser: false, parse: [] },
@@ -729,11 +729,12 @@ client.on('messageCreate', async (message) => {
         await markov.addData([messageToData(message)]);
 
         //QQ addition (Random Post Generator)
-        let RandomChance = Math.random();
-        L.debug('Random Chance Try');
-        L.debug(RandomChance.toString());
         if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)))
         {
+          let RandomChance = Math.random();
+          L.debug('Random Chance Try');
+          L.debug(CountSinceOutput.toString());
+          L.debug(RandomChance.toString());
           if (RandomChance < ((CountSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE )) 
           {
             L.debug('Random Chance Pass');
