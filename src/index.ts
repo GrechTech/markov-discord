@@ -38,7 +38,7 @@ interface SelectMenuChannel {
   name?: string;
 }
 
-const RANDOM_MESSAGE_CHANCE = 0.02;
+const RANDOM_MESSAGE_CHANCE = 0.01;
 const MESSAGE_LIMIT = 10000;
 
 const INVALID_PERMISSIONS_MESSAGE = 'You do not have the permissions for this action.';
