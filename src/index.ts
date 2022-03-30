@@ -39,8 +39,8 @@ interface SelectMenuChannel {
 }
 
 var CountSinceOutput = 0;
-const RANDOM_MESSAGE_TARGET = 50;
-const RANDOM_MESSAGE_CHANCE = 0.02;
+const RANDOM_MESSAGE_TARGET = 100;
+const RANDOM_MESSAGE_CHANCE = 0.01;
 const MESSAGE_LIMIT = 10000;
 
 const INVALID_PERMISSIONS_MESSAGE = 'You do not have the permissions for this action.';
@@ -729,7 +729,7 @@ client.on('messageCreate', async (message) => {
         await markov.addData([messageToData(message)]);
 
         //QQ addition (Random Post Generator)
-        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)))
+        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)) && !message.content.contains(":"))
         {
           let RandomChance = Math.random();
           L.debug('Random Chance Try');
