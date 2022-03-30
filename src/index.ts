@@ -729,7 +729,7 @@ client.on('messageCreate', async (message) => {
         await markov.addData([messageToData(message)]);
 
         //QQ addition (Random Post Generator)
-        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)) && !message.content.contains(":"))
+        if(isFinite((CountSinceOutput / RANDOM_MESSAGE_TARGET)) && !message.content.includes(":"))
         {
           let RandomChance = Math.random();
           L.debug('Random Chance Try');
