@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ## Versions
 
+### 2.4.0
+
+* Update to Node 24
+* Require `init: true` in Docker config due to removing `tini`
+
+### 2.3.0
+
+* Update to Node 20 and Discord.js 14. Update a million dependencies
+* Fix empty attachment bug (#61)
+
+### 2.2.0
+
+* Add a `clean` option flag to the `/train` command to allow retraining without overwriting
+* Add the ability to train from file of messages (#31)
+
+### 2.1.1
+
+* Fix TTS not working for slash commands (with a somewhat janky solution)
+* Update dependencies (discord.js 13.7)
+
+### 2.1.0
+
+* Update dependencies (typeorm 0.3)
+* Dockerfile optimization
+
 ### 2.0.1
 
 * Add a filter to ensure the bot doesn't just post exact previous messages.
