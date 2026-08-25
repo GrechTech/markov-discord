@@ -50,6 +50,10 @@ interface IRefreshUrlsRes {
  */
 type AgnosticReplyOptions = Omit<Discord.MessageCreateOptions, 'reply' | 'stickers' | 'flags'>;
 
+let countSinceOutput = 0;
+const RANDOM_MESSAGE_TARGET = 100;
+const RANDOM_MESSAGE_CHANCE = 0.01;
+
 const INVALID_PERMISSIONS_MESSAGE = 'You do not have the permissions for this action.';
 const INVALID_GUILD_MESSAGE = 'This action must be performed within a server.';
 
@@ -567,6 +571,7 @@ async function generateResponse(
     const response = await markov.generate<MarkovDataCustom>(markovGenerateOptions);
     L.info({ string: response.string }, 'Generated response text');
     L.debug({ response }, 'Generated response object');
+    countSinceOutput = 0;
     const messageOpts: AgnosticReplyOptions = {
       tts,
       allowedMentions: { repliedUser: false, parse: [] },
@@ -813,6 +818,21 @@ client.on('messageCreate', async (message) => {
         L.debug('Listening');
         const markov = await getMarkovByGuildId(message.channel.guildId);
         await markov.addData([messageToData(message)]);
+
+        // GrechTech auto-post: ramp from zero to a 1% chance over 100 messages.
+        if (
+          Number.isFinite(countSinceOutput / RANDOM_MESSAGE_TARGET) &&
+          !message.content.includes(':')
+        ) {
+          const randomChance = Math.random();
+          const outputChance = (countSinceOutput / RANDOM_MESSAGE_TARGET) * RANDOM_MESSAGE_CHANCE;
+          L.debug({ countSinceOutput, randomChance, outputChance }, 'Auto-post chance check');
+          if (randomChance < outputChance) {
+            const generatedResponse = await generateResponse(message);
+            await handleResponseMessage(generatedResponse, message);
+          }
+        }
+        countSinceOutput += 1;
       }
     }
   }
