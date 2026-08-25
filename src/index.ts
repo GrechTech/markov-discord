@@ -27,6 +27,7 @@ import {
 } from './deploy-commands';
 import { getRandomElement, getVersion, packageJson } from './util';
 import ormconfig from './ormconfig';
+import { isAcceptableResponse } from './response-filter';
 
 interface MarkovDataCustom {
   attachments: string[];
@@ -79,11 +80,7 @@ const markovOpts: MarkovConstructorOptions = {
 };
 
 const markovGenerateOptions: MarkovGenerateOptions<MarkovDataCustom> = {
-  filter: (result): boolean => {
-    return (
-      result.score >= config.minScore && !result.refs.some((ref) => ref.string === result.string)
-    );
-  },
+  filter: (result): boolean => isAcceptableResponse(result, config.minScore),
   maxTries: config.maxTries,
 };
 

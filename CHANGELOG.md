@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Update to Node 24
 * Require `init: true` in Docker config due to removing `tini`
+* Reject generated responses copied from any referenced source message
 
 ### 2.3.0
 
