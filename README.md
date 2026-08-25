@@ -2,7 +2,7 @@
 
 A Markov chain bot using markov-strings.
 
-This GrechTech fork adds automatic posts for messages in listened channels. The probability ramps up over the first 100 eligible messages to a maximum of 1%; messages containing a colon are excluded.
+This GrechTech fork adds automatic posts for messages in listened channels and caps history training at 10,000 human-authored messages per run. The probability ramps up over the first 100 eligible messages to a maximum of 1%; messages containing a colon are excluded.
 
 ## Usage
 

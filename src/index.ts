@@ -53,6 +53,7 @@ type AgnosticReplyOptions = Omit<Discord.MessageCreateOptions, 'reply' | 'sticke
 let countSinceOutput = 0;
 const RANDOM_MESSAGE_TARGET = 100;
 const RANDOM_MESSAGE_CHANCE = 0.01;
+const MESSAGE_LIMIT = 10000;
 
 const INVALID_PERMISSIONS_MESSAGE = 'You do not have the permissions for this action.';
 const INVALID_GUILD_MESSAGE = 'This action must be performed within a server.';
@@ -343,6 +344,8 @@ async function saveGuildMessageHistory(
   let firstMessageDate: number | undefined;
   // eslint-disable-next-line no-restricted-syntax
   for (const channel of channels) {
+    if (messagesCount >= MESSAGE_LIMIT) break;
+
     let oldestMessageID: string | undefined;
     let keepGoing = true;
     L.debug({ channelId: channel.id, messagesCount }, `Training from channel`);
@@ -415,12 +418,16 @@ async function saveGuildMessageHistory(
       const humanAuthoredMessages = allBatchMessages
         .filter((m) => isHumanAuthoredMessage(m))
         .map(messageToData);
-      L.trace({ oldestMessageID }, `Saving ${humanAuthoredMessages.length} messages`);
+      const remainingMessageCount = MESSAGE_LIMIT - messagesCount;
+      const messagesToSave = humanAuthoredMessages.slice(0, remainingMessageCount);
+      L.trace({ oldestMessageID }, `Saving ${messagesToSave.length} messages`);
       // eslint-disable-next-line no-await-in-loop
-      await markov.addData(humanAuthoredMessages);
+      await markov.addData(messagesToSave);
       L.trace('Finished saving messages');
-      messagesCount += humanAuthoredMessages.length;
+      messagesCount += messagesToSave.length;
       const lastMessage = channelBatchMessages.last();
+
+      if (messagesCount >= MESSAGE_LIMIT) keepGoing = false;
 
       // Update tracking metrics
       if (!lastMessage?.id || channelBatchMessages.size < PAGE_SIZE) {
