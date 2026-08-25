@@ -3,7 +3,7 @@ name: MultiArchDockerBuild
 on:
   push:
     branches:
-      - master
+      - main
       - develop
 
 jobs:
@@ -36,8 +36,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push master
-        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Build and push main
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v7
         with:
           target: deploy
